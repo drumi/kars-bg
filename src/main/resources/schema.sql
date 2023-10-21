@@ -21,5 +21,6 @@ create table if not exists listing(
 	title text not null, 
 	price integer not null, 
 	description text not null, 
-	picture bytea not null
+	picture bytea not null,
+	created_at timestamp not null default now()
 );

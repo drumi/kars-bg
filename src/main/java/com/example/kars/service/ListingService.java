@@ -12,7 +12,7 @@ public class ListingService {
     private ListingRepository listingRepository;
 
     public List<ListingServiceDto> getAll() {
-        return listingRepository.getAll();
+        return listingRepository.getAllOrderedByTime();
     }
 
     public void create(ListingServiceDto listing) {

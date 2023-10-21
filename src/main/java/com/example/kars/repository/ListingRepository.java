@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,37 +22,54 @@ public class ListingRepository {
     private DataSource dataSource;
 
     public List<ListingServiceDto> getAll() {
-        List<ListingServiceDto> listings = new ArrayList<>();
+        return extractAllListings("SELECT username, title, price, description, picture FROM listing");
+    }
 
-        try (var conn = dataSource.getConnection()){
-            var stmt = conn.prepareStatement(
-                "SELECT username, title, price, description, picture FROM listing"
+    public List<ListingServiceDto> getAllOrderedByTime() {
+        return extractAllListings("SELECT * FROM listing ORDER BY created_at DESC");
+    }
+
+    private ListingServiceDto createListingFromResultSet(ResultSet rs) throws SQLException {
+        var listing = new ListingServiceDto();
+
+        listing.setUsername(rs.getString("username"));
+        listing.setTitle(rs.getString("title"));
+        listing.setPrice(rs.getInt("price"));
+        listing.setDescription(rs.getString("description"));
+        try {
+            listing.setPicture(
+                ImageIO.read(
+                    new ByteArrayInputStream(rs.getBytes("picture"))
+                )
             );
-
-            var rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                var listing = new ListingServiceDto();
-                listing.setUsername(rs.getString("username"));
-                listing.setTitle(rs.getString("title"));
-                listing.setPrice(rs.getInt("price"));
-                listing.setDescription(rs.getString("description"));
-                listing.setPicture(
-                    ImageIO.read(
-                        new ByteArrayInputStream(rs.getBytes("picture"))
-                    )
-                );
-
-                listings.add(listing);
-            }
-        } catch (SQLException e) {
-            throw new AccessException("Could not load the data", e);
         } catch (IOException e) {
             throw new AccessException("Could not decode image", e);
         }
 
+        return listing;
+    }
+
+    private List<ListingServiceDto> extractAllListings(String sql) {
+        List<ListingServiceDto> listings = new ArrayList<>();
+
+        try (var conn = dataSource.getConnection()){
+            var stmt = conn.prepareStatement(sql);
+
+            var rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                listings.add(
+                    createListingFromResultSet(rs)
+                );
+            }
+        } catch (SQLException e) {
+            throw new AccessException("Could not load the data", e);
+        }
+
         return listings;
     }
+
+
 
     public void create(ListingServiceDto listing) {
         byte[] pictureBytes;

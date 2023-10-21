@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <head th:replace="fragments/headFragment.html::headFragment(Kars)"></head>
+</head>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col"></div>
+            <div class="col-sm-8">
+                <div class="alert alert-danger" role="alert" th:if="${param.error}">Invalid username and password.</div>
+                <form th:action="@{/login}" method="post">
+                    <p class="h2 mb-3">Login:</p>
+                    <div class="mb-3">
+                        <label for="username" class="form-label visually-hidden">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label visually-hidden">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    </div>
+                    <div>
+                        <span><small>Not yet a member? <a th:href="@{/register}">Register</a></small></span>
+                        <button type="submit" class="btn btn-primary float-end">Login</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</body>
+</html>

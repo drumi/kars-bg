@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <head th:replace="fragments/headFragment.html::headFragment(Kars)"></head>
+</head>
+<body>
+<div class="container">
+    <div class="row mt-5">
+        <div class="col"></div>
+        <div class="col-sm-8">
+            <form th:action="@{/post}" method="post" enctype="multipart/form-data">
+                <p class="h2 mb-3">Post a new listing:</p>
+                <div class="mb-3">
+                    <label for="title" class="form-label visually-hidden">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label visually-hidden">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Price in $" min="1">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label visually-hidden">Description</label>
+                    <textarea class="form-control" id="description" name="description" placeholder="Description..."></textarea>
+                </div>
+                <div class="mb-3 d-flex">
+                    <label for="picture" class="form-label my-auto mx-2">Picture:</label>
+                    <input type="file" class="form-control" id="picture" name="picture">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary float-end">Post</button>
+                </div>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+</body>
+</html>
